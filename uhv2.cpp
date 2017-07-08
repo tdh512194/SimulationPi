@@ -315,7 +315,7 @@ UHV2::TypP UHV2::CalculateP(TypV &voltage)
     return pressure;
 }
 
-void UHV2::PrepareMessage()
+void UHV2::PrepareMessage() //understand the command and set the components for the respond message
 {
     if (*mrDt.right(1) != READ)
     {
@@ -347,7 +347,7 @@ void UHV2::PrepareMessage()
     SendMessage(mRspMsg);
 }
 
-void UHV2::SplitRcvMsgComponents(QByteArray rMsg)
+void UHV2::SplitRcvMsgComponents(QByteArray rMsg) //split -> prepare -> send
 {
     UHV2 &UHV2Tmp = UHV2::theUHV2(mAddress);
     UHV2Tmp.mRcvMsg.clear();

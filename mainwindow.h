@@ -57,16 +57,20 @@ signals:
     void receiveMsg4(QByteArray &msg);
 
 private slots:
+    //Combo boxes for selecting the port of Serial interface
     void on_comboBox1_currentIndexChanged(int index);
     void on_comboBox2_currentIndexChanged(int index);
     void on_comboBox3_currentIndexChanged(int index);
     void on_comboBox4_currentIndexChanged(int index);
 
+    //checkboxes for ON/OFF the HV
     void on_checkBox1_stateChanged(int state);
     void on_checkBox2_stateChanged(int state);
     void on_checkBox3_stateChanged(int state);
     void on_checkBox4_stateChanged(int state);
 
+    //for setting the range of V and I
+    //connect the signals setV and setI with according object (uhv4 or 2) at according port (1 - 4) with the set range slots of the class and then disconnect
     void on_pushButton1_clicked();
     void on_pushButton2_clicked();
     void on_pushButton3_clicked();

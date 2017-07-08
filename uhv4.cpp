@@ -548,8 +548,7 @@ UHV4::TypI UHV4::RandomizeI()
 UHV4::TypP UHV4::CalculateP(TypV &voltage)
 {
     UHV4::TypP pressure;
-    //pressure = pow(10,(static_cast<double>(voltage) - 9.072)/0.833);
-    //pressure = 500000.5*voltage - 0.000005;
+
     pressure = 6*pow(10, 0.221*(voltage - 4) - 7);
 
     qDebug() << "pressure: " << pressure << endl;

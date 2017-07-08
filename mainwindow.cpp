@@ -109,14 +109,15 @@ void MainWindow::on_checkBox1_stateChanged(int state)
 
             uhv4_1->moveToThread(thread_1);
             qDebug() << "Serial Interface: " << NowSI1->GetPortName() << endl;
-
+            //signals and slots for setting the serial interface for the objects
             connect(this, SIGNAL(setSerialInterface(QString)), UHV4Tmp_1, SLOT(SetSerialInterface(QString)));
             emit setSerialInterface(NowSI1->mPortName); //set the serial interface for the object
             disconnect(this, SIGNAL(setSerialInterface(QString)), 0, 0);
+
+            //signals and slots for sending message from Main to the object
+            //serial port signal of SI-> serial port read slot of Main-> receive message signal of Main-> split message slot of Object
             connect(this, SIGNAL(receiveMsg1(QByteArray)), UHV4Tmp_1, SLOT(SplitRcvMsgComponents(QByteArray)));
             connect(&NowSI1->mSerialPort, SIGNAL(readyRead()), this, SLOT(serialport14_read())); //emit receiveMsg signal
-            //connect(uhv4_1, SIGNAL(SendMessage(QByteArray)), NowSI1, SLOT(simpleWriteNow(QByteArray)));
-            //connect(thread_1, SIGNAL(started()), uhv4_1
 
             thread_1->start();
         }
@@ -136,8 +137,7 @@ void MainWindow::on_checkBox1_stateChanged(int state)
             disconnect(this, SIGNAL(setSerialInterface(QString)), 0, 0);
             connect(this, SIGNAL(receiveMsg1(QByteArray)), UHV2Tmp_1, SLOT(SplitRcvMsgComponents(QByteArray)));
             connect(&NowSI1->mSerialPort, SIGNAL(readyRead()), this, SLOT(serialport12_read())); //emit receiveMsg signal
-            //connect(uhv4_1, SIGNAL(SendMessage(QByteArray)), NowSI1, SLOT(simpleWriteNow(QByteArray)));
-            //connect(thread_1, SIGNAL(started()), uhv4_1
+
 
             thread_1->start();
         }
@@ -171,8 +171,6 @@ void MainWindow::on_checkBox2_stateChanged(int state)
             disconnect(this, SIGNAL(setSerialInterface(QString)), 0, 0);
             connect(this, SIGNAL(receiveMsg2(QByteArray)), UHV2Tmp_2, SLOT(SplitRcvMsgComponents(QByteArray)));
             connect(&NowSI2->mSerialPort, SIGNAL(readyRead()), this, SLOT(serialport22_read())); //emit receiveMsg signal
-            //connect(uhv4_1, SIGNAL(SendMessage(QByteArray)), NowSI1, SLOT(simpleWriteNow(QByteArray)));
-            //connect(thread_1, SIGNAL(started()), uhv4_1
 
             thread_2->start();
         }
@@ -192,8 +190,7 @@ void MainWindow::on_checkBox2_stateChanged(int state)
             disconnect(this, SIGNAL(setSerialInterface(QString)), 0, 0);
             connect(this, SIGNAL(receiveMsg2(QByteArray)), UHV4Tmp_2, SLOT(SplitRcvMsgComponents(QByteArray)));
             connect(&NowSI2->mSerialPort, SIGNAL(readyRead()), this, SLOT(serialport24_read())); //emit receiveMsg signal
-            //connect(uhv4_1, SIGNAL(SendMessage(QByteArray)), NowSI1, SLOT(simpleWriteNow(QByteArray)));
-            //connect(thread_1, SIGNAL(started()), uhv4_1
+
 
             thread_2->start();
         }
@@ -227,8 +224,6 @@ void MainWindow::on_checkBox3_stateChanged(int state)
             disconnect(this, SIGNAL(setSerialInterface(QString)), 0, 0);
             connect(this, SIGNAL(receiveMsg3(QByteArray)), UHV2Tmp_3, SLOT(SplitRcvMsgComponents(QByteArray)));
             connect(&NowSI3->mSerialPort, SIGNAL(readyRead()), this, SLOT(serialport32_read())); //emit receiveMsg signal
-            //connect(uhv4_1, SIGNAL(SendMessage(QByteArray)), NowSI1, SLOT(simpleWriteNow(QByteArray)));
-            //connect(thread_1, SIGNAL(started()), uhv4_1
 
             thread_3->start();
         }
@@ -248,8 +243,6 @@ void MainWindow::on_checkBox3_stateChanged(int state)
             disconnect(this, SIGNAL(setSerialInterface(QString)), 0, 0);
             connect(this, SIGNAL(receiveMsg3(QByteArray)), UHV4Tmp_3, SLOT(SplitRcvMsgComponents(QByteArray)));
             connect(&NowSI3->mSerialPort, SIGNAL(readyRead()), this, SLOT(serialport34_read())); //emit receiveMsg signal
-            //connect(uhv4_1, SIGNAL(SendMessage(QByteArray)), NowSI1, SLOT(simpleWriteNow(QByteArray)));
-            //connect(thread_1, SIGNAL(started()), uhv4_1
 
             thread_3->start();
         }
@@ -283,8 +276,7 @@ void MainWindow::on_checkBox4_stateChanged(int state)
             disconnect(this, SIGNAL(setSerialInterface(QString)), 0, 0);
             connect(this, SIGNAL(receiveMsg4(QByteArray)), UHV2Tmp_4, SLOT(SplitRcvMsgComponents(QByteArray)));
             connect(&NowSI4->mSerialPort, SIGNAL(readyRead()), this, SLOT(serialport42_read())); //emit receiveMsg signal
-            //connect(uhv4_1, SIGNAL(SendMessage(QByteArray)), NowSI1, SLOT(simpleWriteNow(QByteArray)));
-            //connect(thread_1, SIGNAL(started()), uhv4_1
+
 
             thread_4->start();
         }
@@ -304,8 +296,6 @@ void MainWindow::on_checkBox4_stateChanged(int state)
             disconnect(this, SIGNAL(setSerialInterface(QString)), 0, 0);
             connect(this, SIGNAL(receiveMsg4(QByteArray)), UHV4Tmp_4, SLOT(SplitRcvMsgComponents(QByteArray)));
             connect(&NowSI4->mSerialPort, SIGNAL(readyRead()), this, SLOT(serialport44_read())); //emit receiveMsg signal
-            //connect(uhv4_1, SIGNAL(SendMessage(QByteArray)), NowSI1, SLOT(simpleWriteNow(QByteArray)));
-            //connect(thread_1, SIGNAL(started()), uhv4_1
 
             thread_4->start();
         }
@@ -319,8 +309,12 @@ void MainWindow::on_checkBox4_stateChanged(int state)
 
 void MainWindow::on_pushButton1_clicked()
 {
+    //connect to UHV4 or UHV2 dependes on the checked radio button
+    //connect to the object at port 1 (from 1 - 4) when clicked and disconnect the SetI/SetV signals afterwards for other slots of objects at other ports
     if (ui->radioButton11->isChecked())
     {
+        connect(this, SIGNAL(setV2(int, int)), UHV2Tmp_1,SLOT(SetRangeV(int,int)));
+        connect(this, SIGNAL(setI2(double, double)), UHV2Tmp_1,SLOT(SetRangeI(double,double)));
         emit setV2(ui->MaxV1->text().toInt(), ui->MinV1->text().toInt());
         emit setI2(ui->MaxI1->text().toDouble(), ui->MinI1->text().toDouble());
     }
@@ -342,7 +336,8 @@ void MainWindow::on_pushButton2_clicked()
 {
     if (ui->radioButton21->isChecked())
     {
-        //connect
+        connect(this, SIGNAL(setV2(int, int)), UHV2Tmp_2,SLOT(SetRangeV(int,int)));
+        connect(this, SIGNAL(setI2(double, double)), UHV2Tmp_2,SLOT(SetRangeI(double,double)));
         emit setV2(ui->MaxV2->text().toInt(), ui->MinV2->text().toInt());
         emit setI2(ui->MaxI2->text().toDouble(), ui->MinI2->text().toDouble());
     }
@@ -364,6 +359,8 @@ void MainWindow::on_pushButton3_clicked()
 {
     if (ui->radioButton31->isChecked())
     {
+        connect(this, SIGNAL(setV2(int, int)), UHV2Tmp_3,SLOT(SetRangeV(int,int)));
+        connect(this, SIGNAL(setI2(double, double)), UHV2Tmp_3,SLOT(SetRangeI(double,double)));
         emit setV2(ui->MaxV3->text().toInt(), ui->MinV3->text().toInt());
         emit setI2(ui->MaxI3->text().toDouble(), ui->MinI3->text().toDouble());
     }
@@ -386,6 +383,8 @@ void MainWindow::on_pushButton4_clicked()
 
     if (ui->radioButton41->isChecked())
     {
+        connect(this, SIGNAL(setV2(int, int)), UHV2Tmp_4,SLOT(SetRangeV(int,int)));
+        connect(this, SIGNAL(setI2(double, double)), UHV2Tmp_4,SLOT(SetRangeI(double,double)));
         emit setV2(ui->MaxV4->text().toInt(), ui->MinV4->text().toInt());
         emit setI2(ui->MaxI4->text().toDouble(), ui->MinI4->text().toDouble());
     }
@@ -424,14 +423,14 @@ void MainWindow::serialport14_read()
             int stx = Msg1.indexOf((char) UHV4::STX);
             qDebug() << "stx " << stx << endl;
             qDebug() << QString::number((UHV4Tmp_1->GetUHV4Address()) + UHV4::AddressBase, 16) << endl;
-            while (Msg1.at(stx + 1) != (char) (UHV4Tmp_1->GetUHV4Address() + UHV4::AddressBase))
+            while (Msg1.at(stx + 1) != (char) (UHV4Tmp_1->GetUHV4Address() + UHV4::AddressBase)) //find the valid header after stx
             {
                 stx = Msg1.indexOf((char) UHV4::STX, stx + 1);
                 qDebug() << "stx " << stx << "that nam o " <<  Msg1.indexOf(UHV4Tmp_1->GetUHV4Address() + UHV4::AddressBase) << " + 1 = " << Msg1.at(stx + 1) << endl;
             }
             int etx = Msg1.indexOf((char) UHV4::ETX, stx);
             qDebug() << "etx + 2 -stx +1= " << etx + 2 - stx + 1 << endl;
-            if (Msg1.lastIndexOf((char) UHV4::ETX) != (Msg1.size() - 1) )
+            if (Msg1.lastIndexOf((char) UHV4::ETX) != (Msg1.size() - 1) ) //cut out the wanted command
             {
                 Msg1 = Msg1.mid(stx, etx + 2 - stx + 1);
                 qDebug() << "result: " << Msg1.toHex() << endl;
@@ -606,30 +605,30 @@ void MainWindow::serialport12_read()
     QByteArray a;
     a.append(UHV2Tmp_1->GetUHV2Address() + UHV2::HdrCmdBase);
 
-    if (Msg1.contains(a))
+    if (Msg1.contains(a)) //first check for valid header
     {
         Msg1.append(NowSI1->mSerialPort.readAll());
 
-        while (Msg1.size() < 3)
+        while (Msg1.size() < Msg1.indexOf(a,0) + 2) //wait for Ln component (2 bytes) after the first Hdr
         {
             Msg1.append(NowSI1->mSerialPort.readAll());
         }
 
-        QByteArray Ln = Msg1.mid(1,2);
-        int length = static_cast<int>(Ln[0] - '0')*10 + static_cast<int>(Ln[1] -'0');
+        QByteArray Ln = Msg1.mid(Msg1.indexOf(a,0) + 1, 2); //locate the Ln component after the first Hdr
+        int length = static_cast<int>(Ln[0] - '0')*10 + static_cast<int>(Ln[1] -'0'); //convert 2bytes Ln into int
 
-        while (Msg1.size() < (1 + 2 + length + 1))
+        while (Msg1.size() < (Msg1.indexOf(a,0) + 1 + 2 + length + 1)) //wait for the sufficent length of a message after the first Hdr
         {
             Msg1.append(NowSI1->mSerialPort.readAll());
         }
 
-        int first = Msg1.indexOf(a);
-        Msg1 = Msg1.mid(first, first + 1 + 2 + length + 1);
+        int first = Msg1.indexOf(a, 0);
+        Msg1 = Msg1.mid(first, first + 1 + 2 + length + 1); //cut out the wanted message
 
         emit receiveMsg1(Msg1);
         Msg1.clear();
     }
-    else
+    else //clear until gets the valid Hdr
     {
         Msg1.clear();
     }
@@ -648,20 +647,20 @@ void MainWindow::serialport22_read()
     {
         Msg2.append(NowSI2->mSerialPort.readAll());
 
-        while (Msg2.size() < 3)
+        while (Msg2.size() < Msg2.indexOf(a,0) + 2)
         {
             Msg2.append(NowSI2->mSerialPort.readAll());
         }
 
-        QByteArray Ln = Msg2.mid(1,2);
+        QByteArray Ln = Msg2.mid(Msg2.indexOf(a,0) + 1,2);
         int length = static_cast<int>(Ln[0] - '0')*10 + static_cast<int>(Ln[1] -'0');
 
-        while (Msg2.size() < (1 + 2 + length + 1))
+        while (Msg2.size() < (Msg2.indexOf(a,0) + 1 + 2 + length + 1))
         {
             Msg2.append(NowSI2->mSerialPort.readAll());
         }
 
-        int first = Msg2.indexOf(a);
+        int first = Msg2.indexOf(a, 0);
         Msg2 = Msg2.mid(first, first + 1 + 2 + length + 1);
 
         emit receiveMsg2(Msg2);
@@ -686,20 +685,20 @@ void MainWindow::serialport32_read()
     {
         Msg3.append(NowSI3->mSerialPort.readAll());
 
-        while (Msg3.size() < 3)
+        while (Msg3.size() < Msg3.indexOf(a,0) + 2)
         {
             Msg3.append(NowSI3->mSerialPort.readAll());
         }
 
-        QByteArray Ln = Msg3.mid(1,2);
+        QByteArray Ln = Msg3.mid(Msg3.indexOf(a,0) + 1,2);
         int length = static_cast<int>(Ln[0] - '0')*10 + static_cast<int>(Ln[1] -'0');
 
-        while (Msg3.size() < (1 + 2 + length + 1))
+        while (Msg3.size() < (Msg3.indexOf(a,0) + 1 + 2 + length + 1))
         {
             Msg3.append(NowSI3->mSerialPort.readAll());
         }
 
-        int first = Msg3.indexOf(a);
+        int first = Msg3.indexOf(a, 0);
         Msg3 = Msg3.mid(first, first + 1 + 2 + length + 1);
 
         emit receiveMsg3(Msg3);
@@ -724,20 +723,20 @@ void MainWindow::serialport42_read()
     {
         Msg4.append(NowSI4->mSerialPort.readAll());
 
-        while (Msg4.size() < 3)
+        while (Msg4.size() < Msg4.indexOf(a,0) + 2)
         {
             Msg4.append(NowSI4->mSerialPort.readAll());
         }
 
-        QByteArray Ln = Msg4.mid(1,2);
+        QByteArray Ln = Msg4.mid(Msg4.indexOf(a,0) + 1, 2);
         int length = static_cast<int>(Ln[0] - '0')*10 + static_cast<int>(Ln[1] -'0');
 
-        while (Msg4.size() < (1 + 2 + length + 1))
+        while (Msg4.size() < (Msg4.indexOf(a,0) + 1 + 2 + length + 1))
         {
             Msg4.append(NowSI4->mSerialPort.readAll());
         }
 
-        int first = Msg4.indexOf(a);
+        int first = Msg4.indexOf(a, 0);
         Msg4 = Msg4.mid(first, first + 1 + 2 + length + 1);
 
         emit receiveMsg4(Msg4);
